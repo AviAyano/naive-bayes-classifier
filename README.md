@@ -1,2 +1,2 @@
 # naive-bayes-classifier
-naive bayes classifier
+This is naive bayes classifier.
