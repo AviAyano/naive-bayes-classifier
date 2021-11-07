@@ -57,6 +57,7 @@ def openfile(minus_one,one):
             for lines in table:
                 rows_number += 1
                 separator_line = lines[0].split(',')
+                col_number = len(separator_line)
                 line_without_index_col = separator_line[1:] #[1:] for phishing
 
                 if line_without_index_col[-1] == '-1' and counter_a < (minus_one*0.3):
@@ -67,9 +68,7 @@ def openfile(minus_one,one):
                     counter_b += 1
                 elif not(separator_line[0][0].isalpha()):
                     prob_table.append(line_without_index_col)      #insert to phishing table
-                line = ''.join(line_without_index_col)    #convert to string without a comma
-                if len(line) > col_number and rows_number != 1:
-                    col_number = len(line) - line.count('-') +1
+              
         test_data = test_data_a + test_data_b
         #print("The test data is :",test_data,'\n',"The prob table is :",prob_table)
         return (rows_number-1,col_number,prob_table,test_data)
@@ -77,10 +76,6 @@ def openfile(minus_one,one):
         print("We have an error with your file, please check it again.\nPlease check it again.\n")
     finally:
         return(rows_number-1,col_number,prob_table,test_data)
-
-    #[print(i,end=' ') for i in pishing_table[2] ]
-                #print( line,'\n',col_number,'=',len(line) ,'-',line.count(',') ,'-',line.count('-'))
-            #print(','.join(line))
 
 def class_prob(rows,cols, prob_table):
     one, minus_one = 0,0
@@ -96,10 +91,7 @@ def class_prob(rows,cols, prob_table):
             print("cell value is unexpected :",cell_value)
     prob_class_one = one / rows
     prob_class_minus_one = minus_one / rows
-    #prob_class_zero = zero / rows
-    #print("The class probability :","\nOne :",prob_class_one,"\nMinus_one :",prob_class_minus_one,"\nzero :",prob_class_zero)
     return (one,minus_one,prob_class_one,prob_class_minus_one)
-    #print("Checking the probability rule equals to 1 :",prob_class_one+prob_class_minus_one+prob_class_zero)
 
 def laplacian_correction( cols, class_list):
     corrected_list = copy.deepcopy(class_list)
@@ -121,7 +113,6 @@ def item_set(rows, cols,prob_table):
         set_table[col] = len(set(temp_list))
         temp_list = []
     max_set = max(set_table)
-    #print("The item",max_set)
     return max_set
 
 def attribute_prob(prob_dict, rows, cols, prob_table, class_one, class_minus_one):
@@ -154,58 +145,6 @@ def attribute_prob(prob_dict, rows, cols, prob_table, class_one, class_minus_one
             temp_list0[final_value] = minus_one_class_list[final_value]/class_minus_one
         prob_dict.update({col: [temp_list0,temp_list1]})
     return prob_dict
-
-    # #corrected_zero_list = laplacian_correction(rows, cols, class_zero_list)
-    # corrected_one_list = laplacian_correction(rows, cols, prob_dict)
-    # corrected_minus_one_list = laplacian_correction(rows, cols, prob_dict)
-
-            # if phishing_table[row][30] == '0':
-            #     if cell_value == '1':
-            #         one_attribute += 1 # insert the class prob by attribute like under30 who buy..
-            #         class_zero_list.insert(1, one_attribute / class_zero)
-            #     elif cell_value == '-1':
-            #         minus_one_attribute += 1
-            #         class_zero_list.insert(2, minus_one_attribute / class_zero)
-            #     elif cell_value == '0':
-            #         zero_attribute += 1
-            #         class_zero_list.insert(0, zero_attribute / class_zero)
-            #     else:
-            #         print("cell value is unexpected :", cell_value)
-            #
-            # elif phishing_table[row][30] == '1':
-            #     if cell_value == '1':
-            #         one_attribute += 1
-            #         class_one_list.insert(1, one_attribute / class_one)
-            #     elif cell_value == '-1':
-            #         minus_one_attribute += 1
-            #         class_one_list.insert(2, minus_one_attribute / class_one)
-            #     elif cell_value == '0':
-            #         zero_attribute += 1
-            #         class_one_list.insert(0, zero_attribute / class_one)
-            #     else:
-            #         print("cell value is unexpected :", cell_value)
-            #
-            # elif phishing_table[row][30] == '-1':
-            #     if cell_value == '1':
-            #         one_attribute += 1
-            #         class_minus_one_list.insert(1, one_attribute / class_minus_one)
-            #     elif cell_value == '-1':
-            #         minus_one_attribute += 1
-            #         class_minus_one_list.insert(2, minus_one_attribute / class_minus_one)
-            #     elif cell_value == '0':
-            #         zero_attribute += 1
-            #         class_minus_one_list.insert(0, zero_attribute / class_minus_one)
-            #     else:
-            #         print("cell value is unexpected :", cell_value)
-
-            #print("attribute_prob", class_zero_list, class_one_list, class_minus_one_list)
-
-
-
-    # class_zero_list = list(map(lambda x: x>0 , class_zero_list))
-    # print("wooosdsddsoow",class_zero_list)
-    # class_one_list = list(map(lambda x: x>0 , class_one_list))
-    # class_minus_one_list = list(map(lambda x: x>0 , class_minus_one_list))
 
 def reduce_lists(rows,cols,table,prob_dict,prob_class_one,prob_class_minus_one):
     prob_table = table
@@ -241,20 +180,9 @@ def reduce_lists(rows,cols,table,prob_dict,prob_class_one,prob_class_minus_one):
             print(phishing_counter)
 
     return (legit_counter,phishing_counter)
-    # #print("reduce_lists",corrected_zero_list, corrected_one_list, corrected_minus_one_list)
-    #prob_x_given_class_zero = functools.reduce(lambda x,y: x*y, corrected_zero_list,1)
-    #prob_x_given_class_one = functools.reduce(lambda x,y: x*y, corrected_one_list ,1)
-    #prob_x_given_class_minus_one = functools.reduce(lambda x,y: x*y, corrected_minus_one_list,1)
-    # #print("\nThe class probability:\n", corrected_zero_list, '\n', corrected_one_list, '\n', corrected_minus_one_list)
-    # #print("wooooow",prob_x_given_class_zero,prob_x_given_class_one,prob_x_given_class_minus_one)
-    # #naive_bayes_classifier(prob_x_given_class_zero, class_zero, prob_x_given_class_one, class_one, prob_x_given_class_minus_one,class_minus_one)
-
-
-    #print("The website is : "+str(row), "\nOne :", prob_class_one, "\nMinus_one :", prob_class_minus_one, "\nZero :",prob_class_zero)
 
 def naive_bayes_classifier(prob_x_given_class_one, prob_class_one, prob_x_given_class_minus_one, prob_class_minus_one):
     classifier = [0,0]
-    #classifier[0] = prob_x_given_class_z * class_z
     classifier[0] = prob_x_given_class_minus_one * prob_class_minus_one  # minus one
     classifier[1] = prob_x_given_class_one * prob_class_one
     #print('\n',classifier)
@@ -293,13 +221,7 @@ if __name__ == '__main__':
     class_one ,class_minus_one ,prob_class_one ,prob_class_minus_one = class_prob(train.getRow(),train.getCol(), prob_table)
     prob_dict = attribute_prob(prob_dict, train.getRow(), train.getCol(), prob_table, class_one, class_minus_one)
     legit_counter,phishing_counter = reduce_lists(train.getRow(),train.getCol(),prob_table,prob_dict,prob_class_one,prob_class_minus_one)
-    #print(Web.Phishing.name)
     print_legit_trian,print_phishing_trian = final_porb(sum_of_minus_one,sum_of_one,legit_counter,phishing_counter)
-
-
-
-
-
 
     print("The test dataset is: {} X {} ".format(test.getRow(), test.getCol()))
     #test_data = test_data[1:]
